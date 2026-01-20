@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<HTML lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHRONOS - L'art de reinventé le temps</title>
+    <link rel="preconnect" href="HTTPS://fonts.googleapis.com">
+    <link rel="preconnect" href="HTTPS://fonts.gstatic.com" crossorigin>
+    <link href="HTTPS://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./CSS/index.CSS">
+    <link rel="stylesheet" href="./CSS/Responsivité.CSS">
+</head>
+<body>
+    <header class="mon-header">
+        <nav class="nav-bar">
+            <div class="logo">
+                <h3 class="logo-titre">CHRONOS</h3>
+                <p class="logo-sous-titre">L'art de reinventé le temps</p>
+            </div>
+            <div class="Responsive-nav">
+                <div class="search">
+                    <input type="text" class="search-input" placeholder="Rechercher une montre...">
+                    <button class="search-btn">
+                        <SVG width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </SVG>
+                    </button>
+                </div>
+                <!-- Menu burger button -->
+                <button class="burger-menu" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#">Accueil</a></li>
+                    <li class="nav-item"><a href="#">Collection</a></li>
+                    <li class="nav-item"><a href="#">À propos</a></li>
+                    <li class="nav-item"><a href="#">Contact</a></li>
+                </ul>
+                <div class="cart-icon" >
+                    <SVG width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </SVG>
+                    <span class="cart-count">0</span>
+                </div>
+            </div>
+        </nav>
+        <div class="hero">
+            <div class="hero-texte">
+                <h1>L'élégance à votre poignet</h1>
+                <p>L'art de redefinir le temps de controller son temps de la plus belle de manière possible pour des personnes de qualités</p>
+                <a href="#" class="cta-button">Découvrir</a>
+            </div>
+            <div class="hero-images">
+                <div class="carousel-circle" id="carousel-circle">
+                    <div class="image-wrapper" data-index="0">
+                        <img src="./images/Montre1-removebg-preview.png" alt="Image 1">
+                    </div>
+                    <div class="image-wrapper" data-index="1">
+                        <img src="./images/Montre2-removebg-preview.png" alt="Image 2">
+                    </div>
+                    <div class="image-wrapper" data-index="2">
+                        <img src="./images/Montre3-removebg-preview.png" alt="Image 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="collection">
+       <div class="section-header">
+            <h2 class="section-title"> Notre Collection </h2>
+            <p class="section-subtitle">Découvrez nos dernières créations alliant style et innovation</p>
+        </div>
+    </section>
+</body>
+<script>
+        const images = [
+            {
+                src: './images/Montre1-removebg-preview.png',
+            },
+            {
+                src: './images/Montre2-removebg-preview.png',
+            },
+            {
+                src: './images/Montre3-removebg-preview.png',
+            }
+        ];
+
+        let currentIndex = 0;
+        const carouselCircle = document.getElementById('carousel-circle');
+        const wrappers = document.querySelectorAll('.image-wrapper');
+
+        // Positions fixes
+         const positions = [
+            { 
+                name: 'center',
+                style: {
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '500px',
+                    height: '450px',
+                    zIndex: 10,
+                    opacity: 1
+                }
+            },
+            { 
+                name: 'top',
+                style: {
+                    right: '0%',
+                    top: '10%',
+                    transform: 'translateX(0)',
+                    width: '180px',
+                    height: '180px',
+                    zIndex: 5,
+                    opacity: 0.5
+                }
+            },
+            { 
+                name: 'bottom',
+                style: {
+                    right: '0%',
+                    bottom: '10%',
+                    transform: 'translateX(0)',
+                    width: '180px',
+                    height: '180px',
+                    zIndex: 5,
+                    opacity: 0.5
+                }
+            }
+        ];
+
+
+        function updateCarousel() {
+            wrappers.forEach((wrapper, index) => {
+                // Calculer quelle position cette image doit occuper
+                const positionIndex = (index - currentIndex + 3) % 3;
+                const position = positions[positionIndex];
+                
+                // Appliquer le style de la position
+                Object.assign(wrapper.style, position.style);
+                
+                // Mettre à jour l'image source
+                const imageIndex = index;
+                wrapper.querySelector('img').src = images[imageIndex].src;
+            });
+
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % 3;
+            updateCarousel();
+        }
+
+        // Rotation automatique toutes les 5 secondes
+        setInterval(nextSlide, 5000);
+
+        // Initialiser
+        updateCarousel();
+    </script>
+</HTML>

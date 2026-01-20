@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Circulaire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-circle {
+            position: relative;
+            width: 900px;
+            height: 900px;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .image-wrapper {
+            position: absolute;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-wrapper:hover {
+            opacity: 1 !important;
+            filter: brightness(1.1);
+        }
+
+        .info-box {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 50px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 20;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s;
+        }
+
+        .info-box h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .info-box p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 25;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .dot.active {
+            background: white;
+            width: 35px;
+            border-radius: 7px;
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Indicateur visuel de rotation */
+        .rotation-indicator {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border: 3px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .rotation-indicator::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (max-width: 1024px) {
+            .carousel-circle {
+                width: 700px;
+                height: 700px;
+            }
+
+            .rotation-indicator {
+                width: 550px;
+                height: 550px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-circle {
+                width: 100%;
+                height: 600px;
+            }
+
+            .info-box {
+                width: 90%;
+                padding: 20px 30px;
+            }
+
+            .info-box h2 {
+                font-size: 1.6rem;
+            }
+
+            .info-box p {
+                font-size: 1rem;
+            }
+
+            .rotation-indicator {
+                width: 90%;
+                height: 90%;
+                max-width: 500px;
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="rotation-indicator"></div>
+        
+        <div class="carousel-circle" id="carousel-circle">
+            <div class="image-wrapper" data-index="0">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop" alt="Image 1">
+            </div>
+            <div class="image-wrapper" data-index="1">
+                <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&h=600&fit=crop" alt="Image 2">
+            </div>
+            <div class="image-wrapper" data-index="2">
+                <img src="https://images.unsplash.com/photo-1526045431048-f857369baa09?w=800&h=600&fit=crop" alt="Image 3">
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <h2 id="image-title">Montre Titanium Pro</h2>
+        <p id="image-description">Design moderne et élégant</p>
+    </div>
+
+    <div class="controls">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+    </div>
+
+    <script>
+        const images = [
+            {
+                src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop',
+                title: 'Montre Titanium Pro',
+                description: 'Design moderne et élégant'
+            },
+            {
+                src: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&h=600&fit=crop',
+                title: 'Classic Aviateur',
+                description: 'Style intemporel et raffiné'
+            },
+            {
+                src: 'https://images.unsplash.com/photo-1526045431048-f857369baa09?w=800&h=600&fit=crop',
+                title: 'Sport Diver',
+                description: 'Performance et robustesse'
+            }
+        ];
+
+        let currentIndex = 0;
+        const carouselCircle = document.getElementById('carousel-circle');
+        const wrappers = document.querySelectorAll('.image-wrapper');
+        const dots = document.querySelectorAll('.dot');
+        const titleElement = document.getElementById('image-title');
+        const descriptionElement = document.getElementById('image-description');
+
+        // Positions fixes
+        const positions = [
+            { 
+                name: 'center',
+                style: {
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '500px',
+                    height: '450px',
+                    zIndex: 10,
+                    opacity: 1
+                }
+            },
+            { 
+                name: 'top',
+                style: {
+                    right: '5%',
+                    top: '10%',
+                    transform: 'translateX(0)',
+                    width: '280px',
+                    height: '250px',
+                    zIndex: 5,
+                    opacity: 0.7
+                }
+            },
+            { 
+                name: 'bottom',
+                style: {
+                    right: '5%',
+                    bottom: '10%',
+                    transform: 'translateX(0)',
+                    width: '280px',
+                    height: '250px',
+                    zIndex: 5,
+                    opacity: 0.7
+                }
+            }
+        ];
+
+        function updateCarousel() {
+            wrappers.forEach((wrapper, index) => {
+                // Calculer quelle position cette image doit occuper
+                const positionIndex = (index - currentIndex + 3) % 3;
+                const position = positions[positionIndex];
+                
+                // Appliquer le style de la position
+                Object.assign(wrapper.style, position.style);
+                
+                // Mettre à jour l'image source
+                const imageIndex = index;
+                wrapper.querySelector('img').src = images[imageIndex].src;
+            });
+
+            // Mettre à jour les points de navigation
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+
+            // Mettre à jour les informations
+            titleElement.textContent = images[currentIndex].title;
+            descriptionElement.textContent = images[currentIndex].description;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % 3;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            updateCarousel();
+        }
+
+        // Clic sur les images pour les mettre au centre
+        wrappers.forEach((wrapper, index) => {
+            wrapper.addEventListener('click', () => {
+                goToSlide(index);
+            });
+        });
+
+        // Rotation automatique toutes les 4 secondes
+        setInterval(nextSlide, 4000);
+
+        // Initialiser
+        updateCarousel();
+    </script>
+</body>
+</html>
